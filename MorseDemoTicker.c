@@ -1,21 +1,20 @@
 /*
-* File:   main.c
-* Author: leroyse
-* Creation: 2014.01.15
-* Last-modified: 2014.01.16
-*
+ * File:   main.c
+ * Author: leroyse
+ * Creation: 2014.01.15
+ * Last-modified: 2014.01.16
+ *
  * MCU used: PIC16F628A
-* Compiler: XC8
-*
+ * Compiler: XC8
+ *
  * Changelog:
-*  - LEROYSE : cleaned up the code and renamed a couple of variables to make better sense
-*/
+ *  - LEROYSE : cleaned up the code and renamed a couple of variables to make better sense
+ */
  
 #include <xc.h>
 #include <string.h>
  
 // PIC16F648A Configuration Bit Settings
-// CONFIG BITS
 #pragma config FOSC = INTOSCCLK // Oscillator Selection bits (INTOSC oscillator: CLKOUT function on RA6/OSC2/CLKOUT pin, I/O function on RA7/OSC1/CLKIN)
 #pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled)
 #pragma config PWRTE = ON       // Power-up Timer Enable bit (PWRT enabled)
@@ -25,7 +24,7 @@
 #pragma config CPD = OFF        // Data EE Memory Code Protection bit (Data memory code protection off)
 #pragma config CP = OFF         // Flash Program Memory Code Protection bit (Code protection off)
  
-#define _XTAL_FREQ 4000000 // Internal oscillator
+#define _XTAL_FREQ 4000000      // Internal oscillator
 /****************************************************************/
 /* Built-in delay routine     */
 /****************************************************************/
@@ -34,8 +33,7 @@ extern void _delay(unsigned long);
 // NOTE: To use the macros below, YOU must have previously defined _XTAL_FREQ
 #define __delay_us(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000000.0)))
 #define __delay_ms(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000.0)))
- 
- 
+
 // Pinout definitions
 // Relay activation pin
 #define MORSE_RELAY PORTBbits.RB0
@@ -60,18 +58,16 @@ extern void _delay(unsigned long);
 #define PIN_ON 1
 #define PIN_OFF 0
  
+// morse code alphabet
 const char *code[26] = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---",
     "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-",
     "..-", "...-", ".--", "-..-", "-.--", "--.."};
-const char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
- 
+
 //Télégramme Riegner
-char message[] = "RECU NOUVELLE ALARMANTE"; // qu au quartier general du Fuhrer discussion et examen d un plan";
 // equiv message:  .-. . -.-. ..-  |  -. --- ..- ...- . .-.. .-.. .  |  .- .-.. .- .-. -- .- -. - .
- 
-// helper function definitions
-int findCharPos(char ch);
- 
+char message[] = "RECU NOUVELLE ALARMANTE"; // qu au quartier general du Fuhrer discussion et examen d un plan";
+
+// -----------------------------
 // main loop
 void main() {
     TRIS_MORSE_RELAY = 0; // Make it an output;
@@ -90,7 +86,7 @@ void main() {
                 MESSAGE_RESTART = PIN_OFF;
                 continue;
             }
-            int pos = findCharPos(letter);
+            int pos = (int)letter - (int)'A';
             char *morseCode = (char*)code[pos];
             int numElem = strlen(morseCode);
             for (int j = 0; j < numElem; j++) {
@@ -104,16 +100,7 @@ void main() {
                 }
                 MORSE_RELAY = PIN_OFF;
                 __delay_ms(LETTER_SEPARATOR);
-            }//for morse code char
-        }//for message
-    }
-}
- 
-int findCharPos(char ch){
-   for(int i=0;i<26;i++)
-    {
-        if(alphabet[i] == ch)
-            return i;
-    }
-    return -1;
-}
+            }// for morse code char
+        }// for message
+    }// while
+}// main
