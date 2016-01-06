@@ -16,6 +16,10 @@ The NRF24L01 libraries are based ont he work done on the folloging repositories:
 
 # Projects
 
+## GY80
+This is a test project to interface a sensor (accelerometer, compass, barometer, etc.)
+  * [src code found here](https://github.com/peterjc/longsight)
+
 ## MorseMessagePlayer
 This bit of code is used to replay a MCU stored message through a relay. It is controlled by a PIC16F628A MCU.
 It provides an automated way of triggering an old telegraph keyer.
